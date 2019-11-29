@@ -3,12 +3,14 @@
   "version": "0.0.1",
   "description": "Node-RED node for Google Photos API using OAuth2.",
   "dependencies": {
-    "googleapis": "^36.0.0"
+    "googleapis": "^45.0.0",
+    "googlephotos": "^0.2.5"
   },
   "license": "MIT",
   "keywords": [
     "node-red",
     "google",
+    "googlephotos",
     "googleapis",
     "oauth2"
   ],
