@@ -2,7 +2,9 @@
 
 Node-RED node for the Google Photos API.
 
-This Node is derived from [node-red-contrib-google-oauth2](https://github.com/pckhib/node-red-contrib-google-oauth2): it reuses a big part of its implementation - especially the OAuth2 authentication.
+## Implementation Details
+
+This Node is derived from [node-red-contrib-google-oauth2](https://github.com/pckhib/node-red-contrib-google-oauth2). It reuses a big part of its implementation - especially the OAuth2 authentication.
 
 The implementation of the Google Photos API is based on the [googlephotos package](https://www.npmjs.com/package/googlephotos) ([github](https://github.com/roopakv/google-photos)).
 
