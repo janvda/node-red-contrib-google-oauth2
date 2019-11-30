@@ -15,6 +15,8 @@ module.exports = function(RED) {
     }
 
     var { google } = require('googleapis');
+    const Photos = require('googlephotos');
+
     var discovery = google.discovery({ version: 'v1' });
 
     RED.httpAdmin.get('/google/apis', function(req, res) {
