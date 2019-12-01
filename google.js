@@ -109,7 +109,7 @@ module.exports = function(RED) {
 
         node.on('input', function(msg) {
 
-            this.warn("node.on('input') - "  + node.api);
+            this.warn("node.on('input'):"  + msg );
 
             node.status({
                 fill: 'blue',
@@ -142,7 +142,45 @@ module.exports = function(RED) {
                 }
             }
 
-            get_albums_list(node);
+            async function upload_photo(node, albumId, fileName, filePath, description){
+                node.warn("upload_photo ...")
+                try {
+                    let response = await node.photos.mediaItems.upload(albumId, fileName, filePath, description);
+                    node.warn("upload_photo response :"+ response);
+                    node.status({
+                        fill: 'yellow',
+                        shape: 'dot',
+                        text: 'success'
+                    });
+    
+                    msg.payload = response;
+    
+                    node.send(msg);
+                } catch (e) {
+                    node.status({
+                        fill: 'red',
+                        shape: 'dot',
+                        text: 'error'
+                    });
+                    node.error(e);
+                }
+            }
+
+            switch( msg.payload.operation ) {
+                case "upload_photo" :
+                    upload_photo(node, msg.payload.albumId, msg.payload.fileName, msg.payload.filePath, msg.payload.description );
+                    break;
+                case "get_album_list" :
+                    get_albums_list(node);
+                    break;
+                default:
+                    node.status({
+                            fill: 'red',
+                            shape: 'dot',
+                            text: 'error'
+                        });
+                    node.error("msg.operation (=" + msg.operation+ ") doesn't specify a supported operation.");
+            }
 
             this.warn("... end node.on()");
 
