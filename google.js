@@ -80,9 +80,10 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         var node = this;
         node.config = RED.nodes.getNode(config.google);
+        /*
         node.api = config.api;
         node.operation = config.operation;
-        node.scopes = config.scopes;
+        node.scopes = config.scopes; */
 
         const oauth2Client = new google.auth.OAuth2(
             node.config.credentials.clientId,
@@ -102,7 +103,12 @@ module.exports = function(RED) {
             }
         });
 
+        node.warn("node.config.credentials.accessToken:"+ node.config.credentials.accessToken);
+        node.photos = new Photos(node.config.credentials.accessToken);
+
         node.on('input', function(msg) {
+
+            this.warn("node.on('input') - "  + node.api);
 
             node.status({
                 fill: 'blue',
@@ -110,18 +116,50 @@ module.exports = function(RED) {
                 text: 'pending'
             });
 
+
+            async function get_albums_list(node){
+                node.warn("get_albums_list ...")
+                try {
+                    let response = await node.photos.albums.list();
+                    node.warn("get_albums_list response :"+ response);
+                    node.status({
+                        fill: 'yellow',
+                        shape: 'dot',
+                        text: 'success'
+                    });
+    
+                    msg.payload = response;
+    
+                    node.send(msg);
+                } catch (e) {
+                    node.status({
+                        fill: 'red',
+                        shape: 'dot',
+                        text: 'error'
+                    });
+                    node.error(e);
+                }
+            }
+
+            get_albums_list(node);
+
+            /*
+
             var api = decodeAPI(node.api);
             api = google[api.name]({
                 version: api.version,
                 auth: oauth2Client
             });
+            this.warn("api:" + api);
 
+            this.warn("node.operation:" + node.operation);
             var props = node.operation.split('.');
             var operation = api;
             props.forEach(function(val) {
                 operation = operation[val];
             });
 
+            this.warn("starting operation:" + operation );
             operation(msg.payload, function(err, res) {
 
                 if (err) {
@@ -144,6 +182,8 @@ module.exports = function(RED) {
 
                 node.send(msg);
             });
+            */
+            this.warn("... end node.on()");
 
         });
     }
