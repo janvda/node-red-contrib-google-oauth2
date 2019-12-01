@@ -144,46 +144,6 @@ module.exports = function(RED) {
 
             get_albums_list(node);
 
-            /*
-
-            var api = decodeAPI(node.api);
-            api = google[api.name]({
-                version: api.version,
-                auth: oauth2Client
-            });
-            this.warn("api:" + api);
-
-            this.warn("node.operation:" + node.operation);
-            var props = node.operation.split('.');
-            var operation = api;
-            props.forEach(function(val) {
-                operation = operation[val];
-            });
-
-            this.warn("starting operation:" + operation );
-            operation(msg.payload, function(err, res) {
-
-                if (err) {
-                    node.status({
-                        fill: 'red',
-                        shape: 'dot',
-                        text: 'error'
-                    });
-                    node.error(err);
-                    return;
-                }
-
-                node.status({
-                    fill: 'yellow',
-                    shape: 'dot',
-                    text: 'success'
-                });
-
-                msg.payload = res;
-
-                node.send(msg);
-            });
-            */
             this.warn("... end node.on()");
 
         });
