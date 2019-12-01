@@ -100,6 +100,7 @@ module.exports = function(RED) {
             if (tokens.refresh_token) {
                 node.config.credentials.refreshToken = tokens.refresh_token;
                 RED.nodes.addCredentials(config.google, node.config.credentials);
+                node.warn("tokens refreshed :" + tokens.refresh_token);
             }
         });
 
