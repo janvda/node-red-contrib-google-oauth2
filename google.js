@@ -96,6 +96,8 @@ module.exports = function(RED) {
             token_type: node.config.credentials.tokenType,
             expiry_date: node.config.credentials.expireTime 
         });
+
+        // handling refresh tokens : see https://github.com/googleapis/google-api-nodejs-client#handling-refresh-tokens
         oauth2Client.on('tokens', (tokens) => {
             if (tokens.refresh_token) {
                 node.config.credentials.refreshToken = tokens.refresh_token;
@@ -104,7 +106,9 @@ module.exports = function(RED) {
             }
         });
 
-        node.warn("node.config.credentials.accessToken:"+ node.config.credentials.accessToken);
+        node.warn("node.config.credentials.accessToken:"  + node.config.credentials.accessToken);
+        node.warn("node.config.credentials.refreshToken:" + node.config.credentials.refreshToken);
+        node.warn("node.config.credentials.expireTime:"   + (new Date(node.config.credentials.expireTime)).toLocaleString());
         node.photos = new Photos(node.config.credentials.accessToken);
 
         node.on('input', function(msg) {
