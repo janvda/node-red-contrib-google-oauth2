@@ -97,22 +97,33 @@ module.exports = function(RED) {
             expiry_date: node.config.credentials.expireTime 
         });
 
+        // this is added to force a refresh of the access token.  
+        // In other words the function registered by the below call (= oauth2Client.on('tokens', ...)) will be called.
+        oauth2Client.refreshAccessToken(function(err, tokens) { });
+
+
         // handling refresh tokens : see https://github.com/googleapis/google-api-nodejs-client#handling-refresh-tokens
         oauth2Client.on('tokens', (tokens) => {
-            node.warn("tokens refreshed => new access token :" + tokens.access_token);
+            node.warn("oauth2Client.on(): old access token :" + node.config.credentials.accessToken.substr(0,30));
+            node.warn("oauth2Client.on(): new access token :" + tokens.access_token.substr(0,30));
             node.config.credentials.accessToken = tokens.access_token;
             node.config.credentials.expireTime  = tokens.expiry_date;
+            node.warn("oauth2Client.on(): expireTime:"   + (new Date(node.config.credentials.expireTime)).toLocaleString());
             if (tokens.refresh_token) {
                 node.config.credentials.refreshToken = tokens.refresh_token;
-                node.warn("tokens refreshed :" + tokens.refresh_token);
+                node.warn("oauth2Client.on(): new refresh_token :" + tokens.refresh_token.substr(0,30));
             }
+
+            // Note that this command is not really persisting the credentials !!
             RED.nodes.addCredentials(config.google, node.config.credentials);
+
+            // use the new access take to initialize photos.
+            node.warn("oauth2Client.on(): new Photos ("  + node.config.credentials.accessToken.substr(0,30) + ")");
+            node.photos = new Photos(node.config.credentials.accessToken);
         });
 
-        node.warn("node.config.credentials.accessToken:"  + node.config.credentials.accessToken);
-        node.warn("node.config.credentials.refreshToken:" + node.config.credentials.refreshToken);
+        node.warn("node.config.credentials.refreshToken:" + node.config.credentials.refreshToken.substr(0,30));
         node.warn("node.config.credentials.expireTime:"   + (new Date(node.config.credentials.expireTime)).toLocaleString());
-        node.photos = new Photos(node.config.credentials.accessToken);
 
         node.on('input', function(msg) {
 
