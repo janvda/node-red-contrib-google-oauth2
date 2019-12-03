@@ -100,11 +100,13 @@ module.exports = function(RED) {
         // handling refresh tokens : see https://github.com/googleapis/google-api-nodejs-client#handling-refresh-tokens
         oauth2Client.on('tokens', (tokens) => {
             node.warn("tokens refreshed => new access token :" + tokens.access_token);
+            node.config.credentials.accessToken = tokens.access_token;
+            node.config.credentials.expireTime  = tokens.expiry_date;
             if (tokens.refresh_token) {
                 node.config.credentials.refreshToken = tokens.refresh_token;
-                RED.nodes.addCredentials(config.google, node.config.credentials);
                 node.warn("tokens refreshed :" + tokens.refresh_token);
             }
+            RED.nodes.addCredentials(config.google, node.config.credentials);
         });
 
         node.warn("node.config.credentials.accessToken:"  + node.config.credentials.accessToken);
