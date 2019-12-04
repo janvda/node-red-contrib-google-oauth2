@@ -135,7 +135,6 @@ module.exports = function(RED) {
                 text: 'pending'
             });
 
-
             async function get_albums_list(node){
                 node.warn("get_albums_list ...")
                 try {
