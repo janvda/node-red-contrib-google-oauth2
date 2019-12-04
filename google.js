@@ -141,7 +141,31 @@ module.exports = function(RED) {
                     let response = await node.photos.albums.list();
                     node.warn("get_albums_list response :"+ response);
                     node.status({
-                        fill: 'yellow',
+                        fill: 'green',
+                        shape: 'dot',
+                        text: 'success'
+                    });
+    
+                    msg.payload = response;
+    
+                    node.send(msg);
+                } catch (e) {
+                    node.status({
+                        fill: 'red',
+                        shape: 'dot',
+                        text: 'error'
+                    });
+                    node.error(e);
+                }
+            }
+
+            async function create_album(node,albumTitle){
+                node.warn("create_album ...")
+                try {
+                    let response = await node.photos.albums.create(albumTitle);
+                    node.warn("create_album response :"+ response);
+                    node.status({
+                        fill: 'green',
                         shape: 'dot',
                         text: 'success'
                     });
@@ -165,7 +189,7 @@ module.exports = function(RED) {
                     let response = await node.photos.mediaItems.upload(albumId, fileName, filePath, description);
                     node.warn("upload_photo response :"+ response);
                     node.status({
-                        fill: 'yellow',
+                        fill: 'green',
                         shape: 'dot',
                         text: 'success'
                     });
@@ -189,6 +213,9 @@ module.exports = function(RED) {
                     break;
                 case "get_album_list" :
                     get_albums_list(node);
+                    break;
+                case "create_album" :
+                    create_album(node,msg.payload.title);
                     break;
                 default:
                     node.status({
