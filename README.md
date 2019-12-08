@@ -25,6 +25,7 @@ npm install node-red-contrib-google-photos
 ```
 
 or for a global installation
+
 ```
 npm install -g node-red-contrib-google-photos
 ```
@@ -38,3 +39,8 @@ npm install -g node-red-contrib-google-photos
   * As `Authorized redirect URIs` enter your Node-RED IP plus `/google-credentials/auth/callback` (_e.g. `http://localhost:1880/google-credentials/auth/callback`_)
 
 2. Copy the `Client ID` and `Client secret` and paste them into the Config Node
+
+# Interesting Commands
+
+1.  open shell in container : `docker exec -it node-red-google-photos /bin/bash`
+    *   (re)install google-photos node: `npm install /data/node-red-contrib-google-photos`
