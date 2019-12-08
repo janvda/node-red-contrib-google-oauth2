@@ -80,6 +80,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         var node = this;
         node.config = RED.nodes.getNode(config.google);
+        node.photos = null;
         /*
         node.api = config.api;
         node.operation = config.operation;
@@ -101,11 +102,16 @@ module.exports = function(RED) {
         // In other words the function registered by the below call (= oauth2Client.on('tokens', ...)) will be called.
         oauth2Client.refreshAccessToken(function(err, tokens) { });
 
+        var refreshTimer = setInterval(function() {
+            node.warn("refreshTimer: ...");
+            oauth2Client.refreshAccessToken(function(err, tokens) { });
+        }, 1000*60*5 );
 
         // handling refresh tokens : see https://github.com/googleapis/google-api-nodejs-client#handling-refresh-tokens
         oauth2Client.on('tokens', (tokens) => {
             node.warn("oauth2Client.on(): old access token :" + node.config.credentials.accessToken.substr(0,30));
             node.warn("oauth2Client.on(): new access token :" + tokens.access_token.substr(0,30));
+            var access_token_still_the_same = (node.config.credentials.accessToken === tokens.access_token);
             node.config.credentials.accessToken = tokens.access_token;
             node.config.credentials.expireTime  = tokens.expiry_date;
             node.warn("oauth2Client.on(): expireTime:"   + (new Date(node.config.credentials.expireTime)).toLocaleString());
@@ -117,9 +123,13 @@ module.exports = function(RED) {
             // Note that this command is not really persisting the credentials !!
             RED.nodes.addCredentials(config.google, node.config.credentials);
 
-            // use the new access take to initialize photos.
-            node.warn("oauth2Client.on(): new Photos ("  + node.config.credentials.accessToken.substr(0,30) + ")");
-            node.photos = new Photos(node.config.credentials.accessToken);
+            if ( ( node.photos==null ) || (! access_token_still_the_same) ){
+              // use the new access take to initialize photos.
+              node.warn("oauth2Client.on(): new Photos ("  + node.config.credentials.accessToken.substr(0,30) + ")");
+
+              if (node.photos != null) { delete node.photos; }
+              node.photos = new Photos(node.config.credentials.accessToken);
+            }
         });
 
         node.warn("node.config.credentials.refreshToken:" + node.config.credentials.refreshToken.substr(0,30));
