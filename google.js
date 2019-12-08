@@ -103,10 +103,11 @@ module.exports = function(RED) {
         // In other words the function registered by the below call (= oauth2Client.on('tokens', ...)) will be called.
         oauth2Client.refreshAccessToken(function(err, tokens) { });
 
+        // refresh token every 45 minutes
         var refreshTimer = setInterval(function() {
             node.warn("refreshTimer: ...");
             oauth2Client.refreshAccessToken(function(err, tokens) { });
-        }, 1000*60*5 );
+        }, 1000*60*45 );
 
         // handling refresh tokens : see https://github.com/googleapis/google-api-nodejs-client#handling-refresh-tokens
         oauth2Client.on('tokens', (tokens) => {
