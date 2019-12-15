@@ -99,6 +99,9 @@ module.exports = function(RED) {
             expiry_date: node.config.credentials.expireTime 
         });
 
+        // assure node.photos is initialized.
+        node.photos = new Photos(node.config.credentials.accessToken);
+
         // this is added to force a refresh of the access token.  
         // In other words the function registered by the below call (= oauth2Client.on('tokens', ...)) will be called.
         oauth2Client.refreshAccessToken(function(err, tokens) { });
