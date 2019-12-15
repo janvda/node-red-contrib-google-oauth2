@@ -21,13 +21,13 @@ Package contains two nodes. There is configuration node made for maintaining con
 Run the following command in the root directory of your Node-RED install
 
 ```
-npm install node-red-contrib-google-photos
+npm install janvda/node-red-contrib-google-photos
 ```
 
 or for a global installation
 
 ```
-npm install -g node-red-contrib-google-photos
+npm install -g janvda/node-red-contrib-google-photos
 ```
 
 ## Configuration (TO BE UPDATED)
